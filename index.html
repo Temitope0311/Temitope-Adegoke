@@ -77,6 +77,9 @@
   }
 
   /* ---------- NAV ---------- */
+  /* Note: nav-links is a sibling of header in the DOM (not nested inside it) on
+     purpose, so header's scroll-blur effect can never trap the fullscreen mobile
+     menu inside its own box. */
 
   header.site-nav{
     position: fixed;
@@ -86,29 +89,16 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    background: transparent;
+    background: rgba(241,236,225,0.0);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.35s ease, padding 0.35s ease;
-  }
-  header.site-nav::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    z-index:-1;
-    background: rgba(241,236,225,0);
-    transition: background 0.35s ease;
+    transition: background 0.35s ease, border-color 0.35s ease, padding 0.35s ease;
   }
   header.site-nav.scrolled{
+    background: rgba(241,236,225,0.92);
+    backdrop-filter: saturate(140%) blur(6px);
     border-bottom-color: var(--line);
     padding-top: 16px;
     padding-bottom: 16px;
-  }
-  header.site-nav.scrolled::before{
-    background: rgba(241,236,225,0.92);
-    backdrop-filter: saturate(140%) blur(6px);
-  }
-  header.site-nav:has(.nav-links.open){
-    backdrop-filter: none;
   }
 
   .nav-mark{
@@ -119,9 +109,22 @@
   }
 
   nav.nav-links{
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
     display:flex;
+    align-items:center;
     gap: 34px;
     font-size: 14px;
+    padding: 22px var(--gutter);
+    transition: padding 0.35s ease;
+  }
+  @media (min-width: 761px){
+    header.site-nav.scrolled ~ nav.nav-links{
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
   }
   nav.nav-links a{
     position:relative;
@@ -150,8 +153,7 @@
 
   @media (max-width: 760px){
     nav.nav-links{
-      position:fixed;
-      inset:0;
+      top:0; right:0; left:0; bottom:0;
       background: var(--paper);
       flex-direction:column;
       justify-content:center;
@@ -164,7 +166,6 @@
       opacity:0;
       pointer-events:none;
       transition: transform 0.4s ease, opacity 0.3s ease;
-      z-index: 90;
     }
     nav.nav-links.open{
       transform: translateY(0);
@@ -666,14 +667,15 @@
   <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
-  <nav class="nav-links" id="navLinks">
-    <a href="#work">Work</a>
-    <a href="#build">What I Build</a>
-    <a href="#beyond">TA</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
 </header>
+
+<nav class="nav-links" id="navLinks">
+  <a href="#work">Work</a>
+  <a href="#build">What I Build</a>
+  <a href="#beyond">TA</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+</nav>
 
 <main id="top">
 
